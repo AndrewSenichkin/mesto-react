@@ -1,50 +1,28 @@
 import React from 'react';
 import profilePen from '../image/VectorPen.svg';
-import api from '../utils/Api';
 import Card from './Card';
+import {CurrentUserContext} from '../context/CurrentUserContext';
 
-function Main({ handleEditProfileClick, handleAddPlaceClick, handleEditAvatarClick, onCardClick }) {
-    const [userName, setUserName] = React.useState("");
-    const [userDescription, setUserDescription] = React.useState("");
-    const [userAvatar, setUserAvatar] = React.useState("");
-    const [cards, setInitialCards] = React.useState([])
+function Main({cards, handleEditProfileClick, handleAddPlaceClick, handleEditAvatarClick, onCardClick, onCardLike, onCardDelete}) {
 
-    React.useEffect(() => {
-        api.getAboutUserInfo().then((propsUserInfo) => {
-            setUserName(propsUserInfo.name)
-            setUserDescription(propsUserInfo.about)
-            setUserAvatar(propsUserInfo.avatar)
-        })
-            .catch((err) => console.log(`Ошибка: ${err}`))
-        api.getInitialCards().then((cardData) => {
-            setInitialCards(
-                cardData.map((data) => ({
-                    likes: data.likes,
-                    name: data.name,
-                    link: data.link,
-                    cardId: data._id
-                }))
-            )
-        })
-            .catch((err) => console.log(`Ошибка:${err}`));
-    }, [])
+    const currentUser = React.useContext(CurrentUserContext);
 
-    return (
+    return (  
         <main className="content">
             <section className="profile">
                 <div className="profile__container">
                     <div className="profile__wrapper">
-                        <img className="profile__avatar" src={userAvatar} alt="Изображение профиля, пользователя" />
+                        <img className="profile__avatar" src={currentUser.avatar} alt={`Изображение профиля, ${currentUser.name}`} />
                         <button className="profile__edit-avatar" type="button" onClick={() => handleEditAvatarClick(true)}>
                             <img className="profile__edit-pen" src={profilePen} alt="Письменная ручка" />
                         </button>
                     </div>
                     <div className="profile__info">
                         <div className="profile__container-title">
-                            <h1 className="profile__name">{userName}</h1>
+                            <h1 className="profile__name">{currentUser.name}</h1>
                             <button className="profile__edit-button" onClick={() => handleEditProfileClick(true)} type="button"></button>
                         </div>
-                        <p className="profile__more">{userDescription}</p>
+                        <p className="profile__more">{currentUser.about}</p>
                     </div>
                 </div>
                 <button className="profile__add-button" onClick={() => handleAddPlaceClick(true)} type="button"></button>
@@ -52,11 +30,11 @@ function Main({ handleEditProfileClick, handleAddPlaceClick, handleEditAvatarCli
             <section className="elements">
                 {cards.map((card) => (
                     <Card
-                        key={card.cardId}
-                        likes={card.likes}
-                        name={card.name}
-                        link={card.link}
+                        key={card._id}
+                        card={card}
                         onCardClick={onCardClick}
+                        onCardLike={onCardLike}
+                        onCardDelete={onCardDelete}
                     />
                 ))}
             </section>

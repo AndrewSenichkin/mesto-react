@@ -26,6 +26,7 @@
 @import url(./blocks/element/__smile/element__smile.css);
 @import url(./blocks/element/__smile/_active/element__smile_active.css);
 @import url(./blocks/element/__trash/element__trash.css);
+@import url(./blocks/element/__trash/_active/element__trash_active.css);
 @import url(./blocks/element/__container-like/element__container-like.css);
 @import url(./blocks/element/__count-likes/element__count-likes.css);
 
